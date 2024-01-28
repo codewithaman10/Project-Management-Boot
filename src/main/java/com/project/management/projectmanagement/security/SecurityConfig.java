@@ -29,14 +29,6 @@ public class SecurityConfig {
     @Autowired
     private CustomAuthenticationProvider authenticationProvider;
 
-    /*@Bean
-    public JdbcUserDetailsManagerConfigurer configure(AuthenticationManagerBuilder auth) throws Exception {
-        return auth.jdbcAuthentication().passwordEncoder(passwordEncoder())
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select username, password, enabled from dev.users where username=?")
-                .authoritiesByUsernameQuery("select username, role from users where username=?");
-    }*/
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -47,15 +39,15 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .anyRequest().authenticated())
-                .formLogin(form -> form.loginPage("/login")
+                                .anyRequest().permitAll());
+                /*.formLogin(form -> form.loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/index.html")
                         .permitAll()
                 ).logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));*/
 
         return http.build();
     }
