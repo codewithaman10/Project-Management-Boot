@@ -3,4 +3,4 @@ plugins: [
       title: "Project Manager",
       template: './index.html'
     })
-],
+]
