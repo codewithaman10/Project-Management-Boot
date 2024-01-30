@@ -3,7 +3,7 @@ import Button from "./Button";
 import Projects from "./Projects";
 import { useProjectDispatch } from "./hooks/customHook";
 
-export default function ProjectSidebar() {
+export default function ProjectSidebar({ projectsData }) {
     const dispatch = useProjectDispatch();
 
     const handleOnStartAddProject = () => {

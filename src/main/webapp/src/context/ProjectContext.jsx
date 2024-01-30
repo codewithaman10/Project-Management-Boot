@@ -14,14 +14,14 @@ export const Actions = {
     ADD_NEW_PROJECT: 'addNewProject',
     DELETE_PROJECT: 'deleteProject',
     SELECT_PROJECT: 'selectProject',
-    CANCEL_PROJECT_SELECT: 'cancleProjectSelect'
+    CANCEL_PROJECT_SELECT: 'cancleProjectSelect',
+    LOAD_DATA: 'loadData'
 }
 
 // My Project Management initial state
 export const initialState = {
     selectedProjectId: undefined,
-    projects: [],
-    tasks: []
+    projects: []
 };
 
 // Two contexts -- 1. to keep the projects data and 2. to hold the dispatch function of the project reducer
@@ -30,6 +30,12 @@ export const ProjectDispatchContext = createContext(null);
 
 export const Reducer = (state, action) => {
     switch(action.type) {
+        case 'loadData': {
+            return {
+                ...state,
+                projects: action.data
+            }
+        }
         case 'addTask' : {
             // Whatever variables are declared inside here will stay here
             // don't forgot to return otherwise the control will fall-over to the next case

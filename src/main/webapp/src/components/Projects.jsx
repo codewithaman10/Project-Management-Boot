@@ -4,7 +4,7 @@ import { useProject, useProjectDispatch } from "./hooks/customHook";
 export default function Projects() {
     const projectsData = useProject();
     const dispatch = useProjectDispatch();
-    const projects = projectsData.projects;
+    const projects = projectsData.projects
     const selectedProjectId = projectsData.selectedProjectId;
 
     const onSelect = (projectId) => {
@@ -17,7 +17,8 @@ export default function Projects() {
     return (
         <ul className="mt-8">
             {
-                projects.map(project => {
+                projects.map(p => {
+                    let project = p.project;
                     let cssClass = "w-full text-left px-2 py-1 rounded-sm my-1 hover:text-stone-200 hover:bg-stone-800";
                     if (project.id === selectedProjectId) {
                         cssClass += ' bg-stone-800 text-stone-200';

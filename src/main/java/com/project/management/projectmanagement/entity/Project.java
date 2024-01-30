@@ -13,7 +13,7 @@ import java.util.List;
 public class Project implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private Integer projectId;
 
@@ -29,27 +29,22 @@ public class Project implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @Column(name = "last_updated_by")
     private String lastUpdatedBy;
 
     @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
 
-    @OneToMany(mappedBy = "project", targetEntity = Tasks.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "completed")
+    private boolean completed;
+
+    @OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Tasks> tasks;
 
     public Project() {
-    }
-
-    public Project(Integer projectId, String title, String description, LocalDate dueDate, String createdBy, String lastUpdatedBy, LocalDateTime lastUpdatedAt, List<Tasks> tasks) {
-        this.projectId = projectId;
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.createdBy = createdBy;
-        this.lastUpdatedBy = lastUpdatedBy;
-        this.lastUpdatedAt = lastUpdatedAt;
-        this.tasks = tasks;
     }
 
     public Integer getProjectId() {
@@ -92,6 +87,14 @@ public class Project implements Serializable {
         this.createdBy = createdBy;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public String getLastUpdatedBy() {
         return lastUpdatedBy;
     }
@@ -117,17 +120,27 @@ public class Project implements Serializable {
         this.tasks = tasks;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
     @Override
     public String toString() {
-        return "Projects{" +
+        return "Project{" +
                 "projectId=" + projectId +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", dueDate=" + dueDate +
                 ", createdBy='" + createdBy + '\'' +
+                ", createdAt=" + createdAt +
                 ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
                 ", lastUpdatedAt=" + lastUpdatedAt +
                 ", tasks=" + tasks +
+                ", completed=" + completed +
                 '}';
     }
 }

@@ -13,22 +13,22 @@ import java.time.LocalDateTime;
 public class Tasks implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Integer taskId;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false, referencedColumnName = "project_id")
     private Project project;
 
     @Column(name = "title")
     private String title;
 
-    @Column(name = "due_date")
-    private LocalDate dueDate;
-
     @Column(name = "created_by")
     private String createdBy;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "last_updated_by")
     private String lastUpdatedBy;
@@ -36,17 +36,10 @@ public class Tasks implements Serializable {
     @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
 
-    public Tasks() {
-    }
+    @Column(name = "done")
+    private boolean done;
 
-    public Tasks(Integer taskId, Project project, String title, LocalDate dueDate, String createdBy, String lastUpdatedBy, LocalDateTime lastUpdatedAt) {
-        this.taskId = taskId;
-        this.project = project;
-        this.title = title;
-        this.dueDate = dueDate;
-        this.createdBy = createdBy;
-        this.lastUpdatedBy = lastUpdatedBy;
-        this.lastUpdatedAt = lastUpdatedAt;
+    public Tasks() {
     }
 
     public Integer getTaskId() {
@@ -63,14 +56,6 @@ public class Tasks implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
     }
 
     public String getCreatedBy() {
@@ -106,16 +91,33 @@ public class Tasks implements Serializable {
         this.project = project;
     }
 
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Tasks{" +
                 "taskId=" + taskId +
                 ", project=" + project +
                 ", title='" + title + '\'' +
-                ", dueDate=" + dueDate +
                 ", createdBy='" + createdBy + '\'' +
+                ", createdAt=" + createdAt +
                 ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
                 ", lastUpdatedAt=" + lastUpdatedAt +
+                ", done=" + done +
                 '}';
     }
 }

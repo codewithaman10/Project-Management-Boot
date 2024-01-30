@@ -36,10 +36,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authenticationProvider(authenticationProvider).csrf(AbstractHttpConfigurer::disable)
+        http.authorizeHttpRequests(request -> request.anyRequest().permitAll());
+        /*http.authenticationProvider(authenticationProvider).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .anyRequest().permitAll());
+                                .anyRequest().permitAll());*/
                 /*.formLogin(form -> form.loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/index.html")
