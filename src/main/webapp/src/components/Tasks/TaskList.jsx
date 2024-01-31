@@ -26,7 +26,7 @@ export function Task({task, dispatch}) {
     const handleTaskUpdates = (event, updateType) => {
         setShowSpinner(true);
         // Send the updated Task object to backend to persist the changes in database
-        fetch("http://localhost:8080/projects/update-existing-task", {
+        fetch("/projects/update-existing-task", {
             method: "PUT",
             body: JSON.stringify({
                 ...task,
@@ -75,7 +75,7 @@ export function Task({task, dispatch}) {
     }
 
     const handleTaskDelete = () => {
-        fetch(`http://localhost:8080/projects/delete-task/${task.id}`, {
+        fetch(`/projects/delete-task/${task.id}`, {
             method: "DELETE"
         }).then(response => response.text())
           .then(text => {

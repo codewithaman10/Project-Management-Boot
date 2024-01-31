@@ -12,7 +12,7 @@ export default function Projects() {
     const onSelect = (projectId) => {
 
         setShowSpinner(true);
-        fetch(`http://localhost:8080/projects/get-project/${projectId}`, {
+        fetch(`/projects/get-project/${projectId}`, {
             method: 'GET'
         }).then((response) => response.json())
           .then(json => {

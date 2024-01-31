@@ -18,7 +18,7 @@ export default function AddTasks({ projectId }) {
         console.log("Dispatching action: ", Actions.ADD_TASK);
         setShowSpinner(true);
         // Send the Task object to backend to persist the new task in database
-        fetch("http://localhost:8080/projects/add-new-task", {
+        fetch("/projects/add-new-task", {
             method: "POST",
             body: JSON.stringify({
                 title: title,

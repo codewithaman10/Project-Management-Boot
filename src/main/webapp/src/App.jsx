@@ -23,7 +23,7 @@ function App() {
   console.log(projectsData);
 
   useEffect(() => {
-    fetch("http://localhost:8080/projects/get-all-projects", {
+    fetch("/projects/get-all-projects", {
       method: "GET",
     }).then((response) => response.json())
       .then(json => {
