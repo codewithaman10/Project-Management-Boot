@@ -2,7 +2,9 @@ import { Actions } from "../context/ProjectContext";
 import Tasks from "./Tasks/Tasks";
 import { useProject, useProjectDispatch } from "./hooks/customHook";
 
-export default function ProjectDetails({ project, projectTasks }) {
+export default function ProjectDetails({ selectedProject }) {
+    const project = selectedProject.project;
+    const projectTasks = selectedProject.tasks;
     const dispatch = useProjectDispatch();
     
     const formattedDate = new Date(project.dueDate).toLocaleDateString('en-US', {
@@ -28,7 +30,7 @@ export default function ProjectDetails({ project, projectTasks }) {
                 <p className="mb-4 text-stone-400">{formattedDate}</p>
                 <p className="text-stone-600 whitespace-pre-wrap">{project.description}</p>
             </header>
-            <Tasks projectTasks={projectTasks} dispatch={dispatch}/>
+            <Tasks projectTasks={projectTasks} dispatch={dispatch} projectId={project.id}/>
         </div>
     );
 }

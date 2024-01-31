@@ -1,9 +1,9 @@
 import { Actions } from "../context/ProjectContext";
-import Button from "./Button";
+import Button from "./common/Button";
 import Projects from "./Projects";
 import { useProjectDispatch } from "./hooks/customHook";
 
-export default function ProjectSidebar({ projectsData }) {
+export default function ProjectSidebar() {
     const dispatch = useProjectDispatch();
 
     const handleOnStartAddProject = () => {

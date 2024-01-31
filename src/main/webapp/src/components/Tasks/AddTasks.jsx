@@ -4,9 +4,10 @@ import { Actions } from "../../context/ProjectContext";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function AddTasks() {
+export default function AddTasks({ projectId }) {
     const dispatch = useProjectDispatch();
     const [title, setTitle] = useState('');
+    const [showSpinner, setShowSpinner] = useState(false);
 
     const handleInputChange = (event) => {
         console.log(event.target.value);
@@ -15,14 +16,35 @@ export default function AddTasks() {
 
     const handleAddTask = (e) => {
         console.log("Dispatching action: ", Actions.ADD_TASK);
-        // Here we are telling React "what the user just did" by dispatching the below action
-        // Unlike instead of telling react "what to do" by setting state
-        dispatch({
-            type: Actions.ADD_TASK,
-            title: title,
-        });
+        setShowSpinner(true);
+        // Send the Task object to backend to persist the new task in database
+        fetch("http://localhost:8080/projects/add-new-task", {
+            method: "POST",
+            body: JSON.stringify({
+                title: title,
+                lastUpdatedAt: new Date().toISOString(),
+                lastUpdatedBy: "User1",
+                projectId: projectId,
+                createdBy: "User1",
+                createAt: new Date().toISOString,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        }).then(response => response.json())
+          .then(json => {
+                setShowSpinner(false);
+                setTitle('');
 
-        setTitle('');
+                // Here we are telling React "what the user just did" by dispatching the below action
+                // Unlike instead of telling react "what to do" by setting state
+                dispatch({
+                    type: Actions.ADD_TASK,
+                    newTask: json
+                });
+
+           })
+           .catch(error => console.error(error));
     }
 
     return(

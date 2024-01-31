@@ -17,9 +17,8 @@ public class Tasks implements Serializable {
     @Column(name = "task_id")
     private Integer taskId;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false, referencedColumnName = "project_id")
-    private Project project;
+    @Column(name = "project_id")
+    private int projectId;
 
     @Column(name = "title")
     private String title;
@@ -82,13 +81,12 @@ public class Tasks implements Serializable {
         this.lastUpdatedAt = lastUpdatedAt;
     }
 
-    @JsonBackReference
-    public Project getProject() {
-        return project;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public boolean isDone() {
@@ -111,7 +109,7 @@ public class Tasks implements Serializable {
     public String toString() {
         return "Tasks{" +
                 "taskId=" + taskId +
-                ", project=" + project +
+                ", projectId=" + projectId +
                 ", title='" + title + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +

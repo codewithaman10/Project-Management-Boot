@@ -1,14 +1,18 @@
 package com.project.management.projectmanagement.controller;
 
 import com.project.management.projectmanagement.dto.ProjectDetailsDto;
+import com.project.management.projectmanagement.dto.TaskDto;
 import com.project.management.projectmanagement.service.ProjectManagementService;
+import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -42,5 +46,39 @@ public class ProjectsController {
     public ResponseEntity<List<ProjectDetailsDto>> fetchAllProjects() {
         log.info("Request received to fetch all available projects.");
         return ResponseEntity.ok(projectManagementService.getAllProjects());
+    }
+
+    @PostMapping(value = "add-new-task", consumes = "application/json")
+    public ResponseEntity<TaskDto> addNewTaskForProject(@RequestBody TaskDto task) {
+        log.info("Request received to add new task for project {}.", task.getProjectId());
+        // Save the new Task in task table for project
+        TaskDto addedTask = projectManagementService.addNewTask(task);
+        if (Objects.nonNull(addedTask)) {
+            log.info("Task is successfully saved in database: {} - {}.", addedTask.getProjectId(), addedTask);
+            return ResponseEntity.ok(addedTask);
+        }
+
+        log.info("Error while saving the task.");
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @DeleteMapping(value = "delete-task/{id}")
+    public ResponseEntity<String> deleteTask(@PathVariable String id) {
+        projectManagementService.deleteTaskForId(Integer.parseInt(id));
+        return ResponseEntity.ok("Task successfully deleted.");
+    }
+
+    @PutMapping(value = "update-existing-task", consumes = "application/json")
+    public ResponseEntity<TaskDto> updateExistingTask(@RequestBody TaskDto task) {
+        log.info("Request received to update task for projectid-taskId {}-{}.", task.getProjectId(), task.getId());
+        // Update the Task in task table for project
+        TaskDto updatedTask = projectManagementService.updateTask(task);
+        if (Objects.nonNull(updatedTask)) {
+            log.info("Task is successfully updated in database: {} - {}.", updatedTask.getProjectId(), updatedTask);
+            return ResponseEntity.ok(updatedTask);
+        }
+
+        log.info("Error while saving the task.");
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

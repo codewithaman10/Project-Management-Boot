@@ -1,6 +1,6 @@
 import noProjectSelected from "../assets/no-projects.png";
 import { Actions } from "../context/ProjectContext";
-import Button from "./Button";
+import Button from "./common/Button";
 import { useProjectDispatch } from "./hooks/customHook";
 
 export default function DefaultScreen() {

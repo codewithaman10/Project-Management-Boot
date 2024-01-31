@@ -21,6 +21,36 @@ export function Task({task, dispatch}) {
     // Here we can update the task title if required and can mark the task as done after clicking on the checkbox
     const [updatedTitle, setUpdatedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false);
+
+    const handleTaskUpdates = (event, updateType) => {
+        setShowSpinner(true);
+        // Send the updated Task object to backend to persist the changes in database
+        fetch("http://localhost:8080/projects/update-existing-task", {
+            method: "PUT",
+            body: JSON.stringify({
+                ...task,
+                done: updateType === 'MARK_DONE' ? event.target.checked : task.done,
+                lastUpdatedAt: new Date().toISOString(),
+                lastUpdatedBy: "WEBUSER",
+                title: updateType === 'TITLE_UPDATE' ? updatedTitle : task.title
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        }).then(response => response.json())
+          .then(json => {
+                // Call the dispatch method to update the ui
+                setIsEditing(false);
+                setShowSpinner(false);
+                dispatch({
+                    type: Actions.UPDATE_TASK,
+                    task: json
+                });
+           })
+           .catch(error => console.error(error));
+
+    }
 
     const handleCheckBox = (event) => {
         dispatch({
@@ -45,10 +75,19 @@ export function Task({task, dispatch}) {
     }
 
     const handleTaskDelete = () => {
-        dispatch({
-            type: Actions.DELETE_TASK,
-            taskId: task.id,
-        });
+        fetch(`http://localhost:8080/projects/delete-task/${task.id}`, {
+            method: "DELETE"
+        }).then(response => response.text())
+          .then(text => {
+                console.log(text);
+                // Call the dispatch method to update the ui
+                dispatch({
+                    type: Actions.DELETE_TASK,
+                    taskId: task.id
+                });
+           })
+           .catch(error => console.error(error));
+
     }
 
     return(
@@ -56,7 +95,7 @@ export function Task({task, dispatch}) {
             <div className="flex items-center h-7">
                 <input id="helper-checkbox" aria-describedby="helper-checkbox-text" type="checkbox" 
                 value="" 
-                onChange={handleCheckBox}
+                onChange={(e) => handleTaskUpdates(e, "MARK_DONE")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
             </div>
             <div className="ms-2 text-md">
@@ -85,7 +124,7 @@ export function Task({task, dispatch}) {
                     />
                     <button className="inline text-stone-600 hover:text-stone-900 px-1 py-1 ml-1 bg-gray-200 rounded-lg disabled:text-stone-400" 
                         disabled={updatedTitle.length === 0}
-                        onClick={handleTitleUpdate}>
+                        onClick={(e) => handleTaskUpdates(e, "TITLE_UPDATE")}>
                         Save
                     </button>
                 </div> 

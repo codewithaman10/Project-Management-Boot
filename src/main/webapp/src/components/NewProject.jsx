@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import Input from "./Input";
-import Modal from "./Modal";
+import Input from "./common/Input";
+import Modal from "./common/Modal";
 import { useProjectDispatch } from "./hooks/customHook";
 import { Actions } from "../context/ProjectContext";
 
