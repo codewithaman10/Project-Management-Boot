@@ -2,7 +2,6 @@ package com.project.management.projectmanagement.dto;
 
 import lombok.Builder;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,18 +12,18 @@ public class ProjectDto {
     private String title;
     private String description;
     private LocalDate dueDate;
-    private String createBy;
+    private String createdBy;
     private LocalDateTime createdAt;
     private String lastUpdatedBy;
     private LocalDateTime lastUpdatedAt;
     private boolean isCompleted;
 
-    public ProjectDto(int id, String title, String description, LocalDate dueDate, String createBy, LocalDateTime createdAt, String lastUpdatedBy, LocalDateTime lastUpdatedAt, boolean isCompleted) {
+    public ProjectDto(int id, String title, String description, LocalDate dueDate, String createdBy, LocalDateTime createdAt, String lastUpdatedBy, LocalDateTime lastUpdatedAt, boolean isCompleted) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        this.createBy = createBy;
+        this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.lastUpdatedBy = lastUpdatedBy;
         this.lastUpdatedAt = lastUpdatedAt;
@@ -63,12 +62,12 @@ public class ProjectDto {
         this.dueDate = dueDate;
     }
 
-    public String getCreateBy() {
-        return createBy;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public LocalDateTime getCreatedAt() {

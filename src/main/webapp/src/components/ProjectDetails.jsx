@@ -14,9 +14,18 @@ export default function ProjectDetails({ selectedProject }) {
     });
 
     const handleOnDelete = () => {
-        dispatch({
-            type: Actions.DELETE_PROJECT
-        });
+
+        fetch(`http://localhost:8080/projects/delete-project/${project.id}`, {
+            method: 'DELETE',
+        })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text);
+                dispatch({
+                    type: Actions.DELETE_PROJECT
+                });
+            })
+            .catch(error => console.log(error));
     }
 
 

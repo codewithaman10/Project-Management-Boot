@@ -129,26 +129,13 @@ export const Reducer = (state, action) => {
         }
         case 'addProject' : {
             console.log("Inside the " + action.type + " reducer.");
-            const newProject = {
-                id: state.projects.length,
-                title: action.title,
-                description: action.description,
-                dueDate: action.dueDate
-            }
 
             return {
                 ...state,
                 selectedProjectId: undefined,
                 projects: [
                     ...state.projects,
-                    newProject
-                ],
-                tasks: [
-                    ...state.tasks,
-                    {
-                        projectId: newProject.id,
-                        taskList: []
-                    }
+                    action.project
                 ]
             }
         }
@@ -168,8 +155,7 @@ export const Reducer = (state, action) => {
             return {
                 ...state,
                 selectedProjectId: undefined,
-                projects: state.projects.filter(project => project.id !== state.selectedProjectId),
-                tasks: state.tasks.filter(task => task.projectId !== state.selectedProjectId)
+                projects: state.projects.filter(project => project.id !== state.selectedProjectId)
             }
         }
         case 'addNewProject': {

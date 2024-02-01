@@ -1,6 +1,8 @@
 package com.project.management.projectmanagement.controller;
 
 import com.project.management.projectmanagement.dto.ProjectDetailsDto;
+import com.project.management.projectmanagement.dto.ProjectDto;
+import com.project.management.projectmanagement.dto.ProjectLightDto;
 import com.project.management.projectmanagement.dto.TaskDto;
 import com.project.management.projectmanagement.service.ProjectManagementService;
 import jdk.jfr.ContentType;
@@ -43,7 +45,7 @@ public class ProjectsController {
     }
 
     @GetMapping("/get-all-projects")
-    public ResponseEntity<List<ProjectDetailsDto>> fetchAllProjects() {
+    public ResponseEntity<List<ProjectLightDto>> fetchAllProjects() {
         log.info("Request received to fetch all available projects.");
         return ResponseEntity.ok(projectManagementService.getAllProjects());
     }
@@ -80,5 +82,24 @@ public class ProjectsController {
 
         log.info("Error while saving the task.");
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(value = "add-new-project", consumes = "application/json")
+    public ResponseEntity<ProjectLightDto> addNewProject(@RequestBody ProjectDto project) {
+        log.info("New Project: {}", project);
+        log.info("Request received to add project - {}", project.getTitle());
+        ProjectLightDto newProject = projectManagementService.addNewProject(project);
+
+        if(Objects.nonNull(newProject)) {
+            return ResponseEntity.ok(newProject);
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @DeleteMapping(value = "delete-project/{id}")
+    public ResponseEntity<String> deleteProject(@PathVariable String id) {
+        projectManagementService.deleteProjectForId(Integer.parseInt(id));
+        return ResponseEntity.ok("Project and related tasks successfully deleted.");
     }
 }

@@ -79,16 +79,4 @@ public class ProjectsVO {
         this.lastUpdatedAt = lastUpdatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "ProjectsVO{" +
-                "projectId=" + projectId +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", createdBy='" + createdBy + '\'' +
-                ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
-                ", dueDate=" + dueDate +
-                ", lastUpdatedAt=" + lastUpdatedAt +
-                '}';
-    }
 }

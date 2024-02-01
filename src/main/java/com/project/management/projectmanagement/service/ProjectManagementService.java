@@ -4,6 +4,7 @@ import com.project.management.projectmanagement.dao.ProjectsDao;
 import com.project.management.projectmanagement.dao.TasksDao;
 import com.project.management.projectmanagement.dto.ProjectDetailsDto;
 import com.project.management.projectmanagement.dto.ProjectDto;
+import com.project.management.projectmanagement.dto.ProjectLightDto;
 import com.project.management.projectmanagement.dto.TaskDto;
 import com.project.management.projectmanagement.entity.Project;
 import com.project.management.projectmanagement.entity.Tasks;
@@ -26,8 +27,8 @@ public class ProjectManagementService {
         this.tasksDao = tasksDao;
     }
 
-    public List<ProjectDetailsDto> getAllProjects() {
-        return convertToProjectDetailsDto(projectsDao.findAll());
+    public List<ProjectLightDto> getAllProjects() {
+        return extractLightWeightProjectDto(projectsDao.findAll());
     }
 
     public Optional<ProjectDetailsDto> fetchProject(int id) {
@@ -35,6 +36,15 @@ public class ProjectManagementService {
 
         return project.map(p -> this.convertProjectToDto(p, true));
 
+    }
+
+    private List<ProjectLightDto> extractLightWeightProjectDto(List<Project> projects) {
+        List<ProjectLightDto> projectList = new ArrayList<>();
+        projects.forEach(project -> {
+            projectList.add(new ProjectLightDto(project.getProjectId(), project.getTitle(), project.getDueDate()));
+        });
+
+        return projectList;
     }
 
     private List<ProjectDetailsDto> convertToProjectDetailsDto(List<Project> projects) {
@@ -100,5 +110,27 @@ public class ProjectManagementService {
                         project.getDueDate(), project.getCreatedBy(), project.getCreatedAt(),
                         project.getLastUpdatedBy(), project.getLastUpdatedAt(), project.isCompleted())
                 , tasks);
+    }
+
+    public ProjectLightDto addNewProject(ProjectDto project) {
+        Project p = projectsDao.save(converDtoToProject(project));
+        return new ProjectLightDto(p.getProjectId(), p.getTitle(), p.getDueDate());
+    }
+
+    public void deleteProjectForId(Integer id) {
+        projectsDao.deleteById(id);
+    }
+
+    private Project converDtoToProject(ProjectDto project) {
+        Project _p = new Project();
+        _p.setTitle(project.getTitle());
+        _p.setDescription(project.getDescription());
+        _p.setDueDate(project.getDueDate());
+        _p.setCreatedAt(project.getCreatedAt());
+        _p.setCreatedBy(project.getCreatedBy());
+        _p.setLastUpdatedAt(project.getLastUpdatedAt());
+        _p.setLastUpdatedBy(project.getLastUpdatedBy());
+
+        return _p;
     }
 }

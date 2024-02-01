@@ -23,12 +23,29 @@ export default function NewProject() {
             return;
         }
 
-        dispatch({
-            type: Actions.ADD_PROJECT,
+        const newProject = {
             title: title,
-            description: description, 
+            description: description,
             dueDate: dueDate,
-        });
+            createdAt: new Date().toISOString(),
+            createdBy: 'Someone',  
+        };
+
+        fetch("http://localhost:8080/projects/add-new-project", {
+            method: 'POST',
+            body: JSON.stringify(newProject),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+            .then(response => response.json())
+            .then(json => {
+                dispatch({
+                    type: Actions.ADD_PROJECT,
+                    project: json
+                });
+            })
+            .catch(error => console.log(error));
     }
 
     const handleCancleEvent = () => {

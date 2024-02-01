@@ -41,7 +41,7 @@ public class Project implements Serializable {
     @Column(name = "completed")
     private boolean completed;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Tasks.class)
     @JoinColumn(name = "project_id", referencedColumnName = "project_id")
     private List<Tasks> tasks;
 

@@ -5,15 +5,17 @@ import { Actions } from "../../context/ProjectContext";
 export default function TaskList({ tasks, dispatch }) {
 
     return(
-        <ul className="p-4 mt-8 rounded-md bg-stone-200">
-            {
-                tasks.map(task => (
-                    <li key={task.id}>
-                        <Task task={task} dispatch={dispatch}/>
-                    </li>
-                ))
-            }
-        </ul>
+        <div className="overflow-auto h-fit">
+            <ul className="p-4 mt-8 mb-4 rounded-md bg-stone-200">
+                {
+                    tasks.map(task => (
+                        <li key={task.id}>
+                            <Task task={task} dispatch={dispatch}/>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
     );
 }
 
@@ -26,7 +28,7 @@ export function Task({task, dispatch}) {
     const handleTaskUpdates = (event, updateType) => {
         setShowSpinner(true);
         // Send the updated Task object to backend to persist the changes in database
-        fetch("/projects/update-existing-task", {
+        fetch("http://localhost:8080/projects/update-existing-task", {
             method: "PUT",
             body: JSON.stringify({
                 ...task,
@@ -75,7 +77,7 @@ export function Task({task, dispatch}) {
     }
 
     const handleTaskDelete = () => {
-        fetch(`/projects/delete-task/${task.id}`, {
+        fetch(`http://localhost:8080/projects/delete-task/${task.id}`, {
             method: "DELETE"
         }).then(response => response.text())
           .then(text => {
@@ -101,21 +103,21 @@ export function Task({task, dispatch}) {
             <div className="ms-2 text-md">
                 {
                 !isEditing ? 
-                <div className="flex justify-between">
+                <div className="flex items-stretch">
                     <div >
                         <label for="helper-checkbox" className="font-medium text-stone-900 dark:text-stone-800">
-                            <span className={task.done ? "line-through":""}>{task.title}</span>
+                            <span className={task.done ? "line-through flex-grow-8":"flex-grow-8"}>{task.title}</span>
                         </label>
                         <p id="helper-checkbox-text " className="text-xs font-normal text-gray-500 dark:text-gray-600">{task.updatedAt}</p>
                     </div>
-                    {/* <span className="timeStamp">{task.updatedAt}</span> */}
+                    {/* <span className="timeStamp">{task.lastUpdatedAt}</span> */}
                     <button disabled={task.done} className="inline text-stone-800 hover:text-stone-900 px-2 py-2 ml-2 bg-gray-200 rounded-lg disabled:text-stone-400" onClick={() => setIsEditing(true)}>Edit</button>      {/* This button will update the local isEditing state of Task component */}
                     <button className="inline text-red-400 hover:text-red-900 px-2 py-2 bg-gray-200 rounded-lg ml-2" onClick={handleTaskDelete}>Delete</button>  {/* This button will dispatch the DELETE action to the Reducer */}
                 </div>
                 : 
                 // Show the input text box to update the title
-                <div className="flex justify-between">
-                    <input className="px-2 py-1 rounded-md bg-stone-200"
+                <div className="flex items-stretch">
+                    <input className="px-2 py-1 rounded-md bg-stone-200 max-w-full w-full"
                     type="text" value={updatedTitle} onChange={
                         (e) => {
                             {/* Just update the local state to track the updated title */}
