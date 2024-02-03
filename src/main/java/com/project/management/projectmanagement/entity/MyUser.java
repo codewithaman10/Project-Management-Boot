@@ -1,24 +1,33 @@
 package com.project.management.projectmanagement.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Builder;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "USERS", schema = "DEV")
-public class MyUser {
+@Builder
+public class MyUser implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGenerator")
+    @SequenceGenerator(name = "userSeqGenerator", schema = "DEV",  sequenceName = "USERS_SEQ")
     @Column(name = "USER_ID")
     private Long userId;
+
+    @Column(name="first_name")
+    private String firstName;
+
+    @Column(name="last_name")
+    private String lastName;
     
     @Column(name = "username")
     private String userName;
     
     @Column(name = "password")
     private String password;
-    @Column(name = "role")
+    @Column(name = "roles")
     private String roles;
     
     @Column(name = "enabled")
@@ -30,8 +39,10 @@ public class MyUser {
     public MyUser() {
     }
 
-    public MyUser(Long userId, String userName, String password, String roles, boolean enabled, String emailId) {
+    public MyUser(Long userId, String firstName, String lastName, String userName, String password, String roles, boolean enabled, String emailId) {
         this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.userName = userName;
         this.password = password;
         this.roles = roles;
@@ -87,10 +98,28 @@ public class MyUser {
         this.emailId = emailId;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
         return "MyUser{" +
                 "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", roles='" + roles + '\'' +

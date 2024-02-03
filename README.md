@@ -7,6 +7,8 @@ Boot and React application to manage projects for a User
 create database dev;
 
 create table dev.users(
+firstName varchar(100) not null,
+lastName varchar(100) not null,
 user_id int(11) not null auto_increment,
 username varchar(100) not null unique,
 password varchar(200) not null,

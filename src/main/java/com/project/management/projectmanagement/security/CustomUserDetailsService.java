@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.List;
@@ -35,10 +36,18 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No such user exist in database." + username);
         }
 
-        return new ProjectUser(user.get().getUserName(), user.get().getPassword(), extractAuthorities(user.get().getRoles()), user.get().getEmailId());
+        return ProjectUser.builder()
+                .username(user.get().getUserName())
+                .password(user.get().getPassword())
+                .isEnabled(user.get().isEnabled())
+                .email(user.get().getEmailId())
+                .roles(extractAuthorities(user.get().getRoles()))
+                .build();
     }
 
     private List<? extends GrantedAuthority> extractAuthorities(String roles) {
-        return Collections.singletonList(new SimpleGrantedAuthority(roles));
+        return Arrays.stream(roles.split(",")).map(
+                SimpleGrantedAuthority::new
+        ).toList();
     }
 }

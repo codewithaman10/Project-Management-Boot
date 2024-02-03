@@ -1,0 +1,32 @@
+package com.project.management.projectmanagement.controller;
+
+import com.project.management.projectmanagement.dto.security.AuthResponse;
+import com.project.management.projectmanagement.dto.security.AuthenticationRequest;
+import com.project.management.projectmanagement.dto.security.RegisterRequest;
+import com.project.management.projectmanagement.service.AuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/auth")
+public class AuthenticationController {
+
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    // Register
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
+        return ResponseEntity.ok(authenticationService.register(registerRequest));
+    }
+
+    // Authenticate
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest){
+        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+    }
+}
