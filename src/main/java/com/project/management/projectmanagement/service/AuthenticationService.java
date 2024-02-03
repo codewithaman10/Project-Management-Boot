@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class AuthenticationService {
 
     public AuthResponse register(RegisterRequest registerRequest) {
         MyUser user = userDao.save(MyUser.builder()
-                .userName(registerRequest.getUsername())
+                .userName(registerRequest.getUsername().toLowerCase())
                 .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
                 .emailId(registerRequest.getEmail())
@@ -41,7 +42,7 @@ public class AuthenticationService {
                 .build());
         String jwtToken = jwtService.generateToken(
                 ProjectUser.builder()
-                        .username(user.getUserName())
+                        .username(user.getUserName().toLowerCase())
                         .password(user.getPassword())
                         .build()
         );
@@ -49,19 +50,16 @@ public class AuthenticationService {
         return new AuthResponse(jwtToken);
     }
 
-    public AuthResponse authenticate(AuthenticationRequest authenticationRequest) {
-        log.info("Username-Password: {}-{}", authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    public AuthResponse authenticate(AuthenticationRequest authenticationRequest) throws Exception {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername().toLowerCase(), authenticationRequest.getPassword())
         );
 
-        log.info("111222-------");
         // If the above method is successfully executed it means that the user is authenticated they are who they are claiming
-        MyUser user = userDao.findByUserName(authenticationRequest.getUsername()).orElseThrow();
-        log.info("111222");
+        MyUser user = userDao.findByUserName(authenticationRequest.getUsername()).orElseThrow(() -> new Exception("No such user exception."));
         String jwtToken = jwtService.generateToken(
                 ProjectUser.builder()
-                        .username(user.getUserName())
+                        .username(user.getUserName().toLowerCase())
                         .password(user.getPassword())
                         .build()
         );
