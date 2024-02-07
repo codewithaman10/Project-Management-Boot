@@ -54,6 +54,9 @@ public class AuthenticationService {
 
     public AuthResponse authenticate(AuthenticationRequest authenticationRequest) throws Exception {
         log.info("auth request body : {}", authenticationRequest);
+        // Here we are first authenticating the user using the Spring's AuthenticationManager
+        // By creating a UsernamePasswordAuthenticationToken which is spring's standard token for
+        // username password related requests
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername().toLowerCase(), authenticationRequest.getPassword())
         );
