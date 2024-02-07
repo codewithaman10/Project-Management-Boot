@@ -3,6 +3,7 @@ import Input from "./common/Input";
 import Modal from "./common/Modal";
 import { useProjectDispatch } from "./hooks/customHook";
 import { Actions } from "../context/ProjectContext";
+import { useUser } from "../context/UserProvider";
 
 export default function NewProject() {
     const titleRef = useRef();
@@ -10,6 +11,7 @@ export default function NewProject() {
     const dueDateRef = useRef();
     const modal = useRef();
     const dispatch = useProjectDispatch();
+    const user = useUser();
 
     const handleSave = () => {
         const title = titleRef.current.value;   // .value since all the textarea and input html tag have value in which they stores the value
@@ -31,11 +33,12 @@ export default function NewProject() {
             createdBy: 'Someone',  
         };
 
-        fetch("http://localhost:8080/projects/add-new-project", {
+        fetch("/projects/add-new-project", {
             method: 'POST',
             body: JSON.stringify(newProject),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'Authorization': `Bearer ${user.token}`
             }
         })
             .then(response => response.json())

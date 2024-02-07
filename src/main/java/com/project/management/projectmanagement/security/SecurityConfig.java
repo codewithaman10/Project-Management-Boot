@@ -25,7 +25,6 @@ public class SecurityConfig {
         this.authenticationProvider = authenticationProvider;
     }
 
-
     // At the application startup Spring will look up for Bean of type security filter chain and
     // the securityFilter bean is responsible for configuring all the http security of our application
     @Bean
@@ -34,14 +33,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request
                             .requestMatchers("/actuator/**", "/api/v1/auth/**").permitAll()
+                            .requestMatchers("classpath:/static/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 // session info should not be stored and each request should be authenticated by OncePerRequestFilter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.successForwardUrl("/index.html"))
-        ;
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

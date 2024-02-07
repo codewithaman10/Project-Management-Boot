@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
 import { Actions } from "../../context/ProjectContext";
+import { useUser } from "../../context/UserProvider";
 
 // Get the List of Tasks and convert them to JSX
 export default function TaskList({ tasks, dispatch }) {
@@ -24,11 +25,12 @@ export function Task({task, dispatch}) {
     const [updatedTitle, setUpdatedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
+    const user = useUser();
 
     const handleTaskUpdates = (event, updateType) => {
         setShowSpinner(true);
         // Send the updated Task object to backend to persist the changes in database
-        fetch("http://localhost:8080/projects/update-existing-task", {
+        fetch("/projects/update-existing-task", {
             method: "PUT",
             body: JSON.stringify({
                 ...task,
@@ -39,6 +41,7 @@ export function Task({task, dispatch}) {
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'Authorization': `Bearer ${user.token}`
             }
         }).then(response => response.json())
           .then(json => {
@@ -77,8 +80,11 @@ export function Task({task, dispatch}) {
     }
 
     const handleTaskDelete = () => {
-        fetch(`http://localhost:8080/projects/delete-task/${task.id}`, {
-            method: "DELETE"
+        fetch(`/projects/delete-task/${task.id}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
         }).then(response => response.text())
           .then(text => {
                 console.log(text);

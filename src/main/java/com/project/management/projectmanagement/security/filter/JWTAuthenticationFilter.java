@@ -3,7 +3,7 @@ package com.project.management.projectmanagement.security.filter;
 import com.project.management.projectmanagement.entity.ProjectUser;
 import com.project.management.projectmanagement.security.CustomUserDetailsService;
 import com.project.management.projectmanagement.service.JwtService;
-import com.sun.tools.jconsole.JConsoleContext;
+import com.project.management.projectmanagement.util.SecurityContextUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -62,7 +61,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         username = jwtService.extractUsername(jwt);
 
         if (Objects.nonNull(username) &&
-                Objects.isNull(SecurityContextHolder.getContext().getAuthentication()) // It will check if the user is not already authenticated
+                Objects.isNull(SecurityContextUtil.getAuthentication()) // It will check if the user is not already authenticated
         ) {
             ProjectUser projectUser = userDetailsService.loadUserByUsername(username);
             if (jwtService.isTokenValid(jwt, projectUser)) {
@@ -81,7 +80,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 // Update the SecurityContextHolder
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextUtil.setAuthentication(authToken);
             }
 
             // Call the rest of the filter chain

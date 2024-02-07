@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Actions } from "../context/ProjectContext";
 import { useProject, useProjectDispatch } from "./hooks/customHook";
+import { useUser } from "../context/UserProvider"
 
 export default function Projects() {
     const [showSpinner, setShowSpinner] = useState(false);
@@ -8,6 +9,7 @@ export default function Projects() {
     const dispatch = useProjectDispatch();
     const projects = projectsData.projects
     const selectedProjectId = projectsData.selectedProjectId;
+    const user = useUser();
 
     console.log("Inside Projects");
     console.log(projects);
@@ -15,8 +17,11 @@ export default function Projects() {
     const onSelect = (projectId) => {
 
         setShowSpinner(true);
-        fetch(`http://localhost:8080/projects/get-project/${projectId}`, {
-            method: 'GET'
+        fetch(`/projects/get-project/${projectId}`, {
+            method: 'GET',
+            header: {
+                'Authorization': `Bearer ${user.token}`
+            }
         }).then((response) => response.json())
           .then(json => {
             console.log(json);

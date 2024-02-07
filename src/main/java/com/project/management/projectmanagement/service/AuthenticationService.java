@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @Slf4j
 public class AuthenticationService {
@@ -47,10 +49,11 @@ public class AuthenticationService {
                         .build()
         );
 
-        return new AuthResponse(jwtToken);
+        return new AuthResponse(user.getUserName(), jwtToken, Collections.singletonList(user.getRoles()));
     }
 
     public AuthResponse authenticate(AuthenticationRequest authenticationRequest) throws Exception {
+        log.info("auth request body : {}", authenticationRequest);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername().toLowerCase(), authenticationRequest.getPassword())
         );
@@ -64,6 +67,6 @@ public class AuthenticationService {
                         .build()
         );
 
-        return new AuthResponse(jwtToken);
+        return new AuthResponse(user.getUserName(), jwtToken, Collections.singletonList(user.getRoles()));
     }
 }

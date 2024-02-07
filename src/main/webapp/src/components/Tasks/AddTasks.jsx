@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useProjectDispatch } from "../hooks/customHook";
 import { Actions } from "../../context/ProjectContext";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserProvider";
 
 export default function AddTasks({ projectId }) {
     const dispatch = useProjectDispatch();
     const [title, setTitle] = useState('');
     const [showSpinner, setShowSpinner] = useState(false);
+    const user = useUser();
 
     const handleInputChange = (event) => {
         console.log(event.target.value);
@@ -18,7 +18,7 @@ export default function AddTasks({ projectId }) {
         console.log("Dispatching action: ", Actions.ADD_TASK);
         setShowSpinner(true);
         // Send the Task object to backend to persist the new task in database
-        fetch("http://localhost:8080/projects/add-new-task", {
+        fetch("/projects/add-new-task", {
             method: "POST",
             body: JSON.stringify({
                 title: title,
@@ -28,6 +28,7 @@ export default function AddTasks({ projectId }) {
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'Authorization': `Bearer ${user.token}`
             }
         }).then(response => response.json())
           .then(json => {

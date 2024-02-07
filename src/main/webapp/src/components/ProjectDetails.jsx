@@ -1,11 +1,13 @@
 import { Actions } from "../context/ProjectContext";
 import Tasks from "./Tasks/Tasks";
 import { useProject, useProjectDispatch } from "./hooks/customHook";
+import { useUser } from "../context/UserProvider"
 
 export default function ProjectDetails({ selectedProject }) {
     const project = selectedProject.project;
     const projectTasks = selectedProject.tasks;
     const dispatch = useProjectDispatch();
+    const user = useUser();
     
     const formattedDate = new Date(project.dueDate).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -15,8 +17,11 @@ export default function ProjectDetails({ selectedProject }) {
 
     const handleOnDelete = () => {
 
-        fetch(`http://localhost:8080/projects/delete-project/${project.id}`, {
+        fetch(`/projects/delete-project/${project.id}`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
         })
             .then(response => response.text())
             .then(text => {
