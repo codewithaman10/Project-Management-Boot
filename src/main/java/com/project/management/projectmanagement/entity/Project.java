@@ -42,7 +42,7 @@ public class Project implements Serializable {
     private boolean completed;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Tasks.class)
-    @JoinColumn(name = "project_id", referencedColumnName = "project_id")
+    @JoinColumn(name = "project_id", referencedColumnName = "project_id", updatable = false)
     private List<Tasks> tasks;
 
     public Project() {

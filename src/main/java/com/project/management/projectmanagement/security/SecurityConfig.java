@@ -33,8 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request
                             .requestMatchers("/actuator/**", "/api/v1/auth/**").permitAll()
-                            .requestMatchers("classpath:/static/**").permitAll()
-                            .anyRequest().authenticated();
+                            .requestMatchers("/static/index.html").permitAll()
+                            .anyRequest().permitAll();
                 })
                 // session info should not be stored and each request should be authenticated by OncePerRequestFilter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

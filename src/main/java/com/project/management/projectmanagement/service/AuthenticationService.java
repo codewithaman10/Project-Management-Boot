@@ -70,6 +70,6 @@ public class AuthenticationService {
                         .build()
         );
 
-        return new AuthResponse(user.getUserName(), jwtToken, Collections.singletonList(user.getRoles()));
+        return new AuthResponse(jwtToken, user.getUserName(), Collections.singletonList(user.getRoles()));
     }
 }
