@@ -17,7 +17,7 @@ export default function ProjectDetails({ selectedProject }) {
 
     const handleOnDelete = () => {
 
-        fetch(`/projects/delete-project/${project.id}`, {
+        fetch(`http://localhost:8080/projects/delete-project/${project.id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${user.token}`
@@ -35,7 +35,7 @@ export default function ProjectDetails({ selectedProject }) {
 
 
     return (
-        <div className="w-[50rem] mt-16">
+        <div className="w-[70rem] mt-16 overflow-auto">
             <header className="pb-4 mb-4 border-b-2 border-stone-300">
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-stone-600 mb-2">{project.title}</h1>

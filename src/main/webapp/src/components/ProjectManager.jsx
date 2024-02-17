@@ -21,16 +21,12 @@ export default function ProjectManager() {
      */
   const [projectsData, dispatch] = useReducer(Reducer, initialState);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const user = useUser();
-  
-  // Props for our login form
-  const [username, setUserName] = useState(undefined);
-  const [password, setPassword] = useState(undefined);
+
   console.log(projectsData);
 
   useEffect(() => {
-    fetch("/projects/get-all-projects", {
+    fetch("http://localhost:8080/projects/get-all-projects", {
       method: "GET",
       header: {
           'Authorization': `Bearer ${user.token}`
@@ -57,18 +53,12 @@ export default function ProjectManager() {
     content = <ProjectDetails selectedProject={selectedProject} />;
   }
 
-  function handleLogin(e) {
-    e.preventDefault();
-    // Call backend to validate the user details and generate the jwt token
-    console.log(username + " " + password);
-  }
-
   return (
-    <>
+    <div className="overflow-hidden">
       <Header />
       <ProjectContext.Provider value={projectsData}>
         <ProjectDispatchContext.Provider value={dispatch}>
-        { isLoading ? <Spinner /> : <main className="h-screen flex gap-8">
+        { isLoading ? <Spinner /> : <main className="flex gap-8 overflow-hidden h-screen">
           {/* <h1 className="my-8 text-center text-5xl font-bold">Project</h1> */}
           <ProjectSidebar/>
           {content}
@@ -76,6 +66,6 @@ export default function ProjectManager() {
 
         </ProjectDispatchContext.Provider>
       </ProjectContext.Provider>
-    </>
+    </div>
   );
 }

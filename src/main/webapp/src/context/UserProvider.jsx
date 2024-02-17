@@ -13,11 +13,13 @@ export const useUser = () => {
 
 const UserProvider = ({ children }) => {
     const [ inputtedUserDetails, setInputtedUserDetails ] = useState(userDetails);
-    const [ authResponse, setAuthResponse ] = useState(null);
+    const [ authResponse, setAuthResponse ] = useState(
+        localStorage.getItem('userDetails') === null ? null : JSON.parse(localStorage.getItem('userDetails'))
+    );
 
     useEffect(() => {
         async function authenicateUser() {
-            await fetch("/api/v1/auth/authenticate", {
+            await fetch("http://localhost:8080/api/v1/auth/authenticate", {
                 method: "POST",
                 body: JSON.stringify(inputtedUserDetails),
                 headers: {
@@ -25,7 +27,7 @@ const UserProvider = ({ children }) => {
                 }
             }).then(response => response.json())
             .then(json => {
-                console.log(json);
+                localStorage.setItem('userDetails', JSON.stringify(json));
                 setAuthResponse(json);
             });
         }
@@ -33,6 +35,10 @@ const UserProvider = ({ children }) => {
         // if the username and password are not null 
         if (inputtedUserDetails.username !== null && inputtedUserDetails.password !== null) {
             authenicateUser();
+        }
+
+        return () => {
+
         }
     }, [inputtedUserDetails]);
 

@@ -30,10 +30,10 @@ export default function NewProject() {
             description: description,
             dueDate: dueDate,
             createdAt: new Date().toISOString(),
-            createdBy: 'Someone',  
+            createdBy: user.username,  
         };
 
-        fetch("/projects/add-new-project", {
+        fetch("http://localhost:8080/projects/add-new-project", {
             method: 'POST',
             body: JSON.stringify(newProject),
             headers: {

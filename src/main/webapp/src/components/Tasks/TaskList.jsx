@@ -1,6 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Actions } from "../../context/ProjectContext";
 import { useUser } from "../../context/UserProvider";
+import useFetch from "../hooks/useFetch";
 
 // Get the List of Tasks and convert them to JSX
 export default function TaskList({ tasks, dispatch }) {
@@ -25,35 +26,33 @@ export function Task({task, dispatch}) {
     const [updatedTitle, setUpdatedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
+    const [saveTaskUrl, configureRequestType, configurePayload, response] = useFetch("", "", {}, null);
     const user = useUser();
+
+    useEffect(() => {
+        setIsEditing(false);
+        
+        setShowSpinner(false);
+        if (response !== null) {
+            dispatch({
+                type: Actions.UPDATE_TASK,
+                task: response
+            });
+        }
+    }, [response]);
 
     const handleTaskUpdates = (event, updateType) => {
         setShowSpinner(true);
         // Send the updated Task object to backend to persist the changes in database
-        fetch("/projects/update-existing-task", {
-            method: "PUT",
-            body: JSON.stringify({
-                ...task,
-                done: updateType === 'MARK_DONE' ? event.target.checked : task.done,
-                lastUpdatedAt: new Date().toISOString(),
-                lastUpdatedBy: "WEBUSER",
-                title: updateType === 'TITLE_UPDATE' ? updatedTitle : task.title
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'Authorization': `Bearer ${user.token}`
-            }
-        }).then(response => response.json())
-          .then(json => {
-                // Call the dispatch method to update the ui
-                setIsEditing(false);
-                setShowSpinner(false);
-                dispatch({
-                    type: Actions.UPDATE_TASK,
-                    task: json
-                });
-           })
-           .catch(error => console.error(error));
+        saveTaskUrl("http://localhost:8080/projects/update-existing-task");
+        configureRequestType("PUT");
+        configurePayload(JSON.stringify({
+            ...task,
+            done: updateType === 'MARK_DONE' ? event.target.checked : task.done,
+            lastUpdatedAt: new Date().toISOString(),
+            lastUpdatedBy: "WEBUSER",
+            title: updateType === 'TITLE_UPDATE' ? updatedTitle : task.title
+        }));
 
     }
 
@@ -80,7 +79,7 @@ export function Task({task, dispatch}) {
     }
 
     const handleTaskDelete = () => {
-        fetch(`/projects/delete-task/${task.id}`, {
+        fetch(`http://localhost:8080/projects/delete-task/${task.id}`, {
             method: "DELETE",
             headers: {
                 'Authorization': `Bearer ${user.token}`

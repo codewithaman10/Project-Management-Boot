@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProjectDispatch } from "../hooks/customHook";
 import { Actions } from "../../context/ProjectContext";
 import { useUser } from "../../context/UserProvider";
+import useFetch from "../hooks/useFetch";
 
 export default function AddTasks({ projectId }) {
     const dispatch = useProjectDispatch();
     const [title, setTitle] = useState('');
     const [showSpinner, setShowSpinner] = useState(false);
+    const [addTaskUrl, configureRequestType, configurePayload, response] = useFetch("", "", {}, null);
     const user = useUser();
 
     const handleInputChange = (event) => {
@@ -14,36 +16,28 @@ export default function AddTasks({ projectId }) {
         setTitle(event.target.value);
     }
 
+    useEffect(() => {
+        setShowSpinner(false);
+        setTitle('');
+        if (response !== null) {
+            dispatch({
+                type: Actions.ADD_TASK,
+                newTask: response
+            });
+        }
+    }, [response]);
+
     const handleAddTask = (e) => {
-        console.log("Dispatching action: ", Actions.ADD_TASK);
         setShowSpinner(true);
         // Send the Task object to backend to persist the new task in database
-        fetch("/projects/add-new-task", {
-            method: "POST",
-            body: JSON.stringify({
-                title: title,
-                projectId: projectId,
-                createdBy: "User1",
-                createAt: new Date().toISOString(),
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-                'Authorization': `Bearer ${user.token}`
-            }
-        }).then(response => response.json())
-          .then(json => {
-                setShowSpinner(false);
-                setTitle('');
-
-                // Here we are telling React "what the user just did" by dispatching the below action
-                // Unlike instead of telling react "what to do" by setting state
-                dispatch({
-                    type: Actions.ADD_TASK,
-                    newTask: json
-                });
-
-           })
-           .catch(error => console.error(error));
+        addTaskUrl("http://localhost:8080/projects/add-new-task");
+        configurePayload(JSON.stringify({
+            title: title,
+            projectId: projectId,
+            createdBy: user.username,
+            createAt: new Date().toISOString(),
+        }));
+        configureRequestType("POST");
     }
 
     return(

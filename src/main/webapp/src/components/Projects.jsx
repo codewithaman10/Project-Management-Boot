@@ -10,14 +10,11 @@ export default function Projects() {
     const projects = projectsData.projects
     const selectedProjectId = projectsData.selectedProjectId;
     const user = useUser();
-
-    console.log("Inside Projects");
-    console.log(projects);
-
+    
     const onSelect = (projectId) => {
 
         setShowSpinner(true);
-        fetch(`/projects/get-project/${projectId}`, {
+        fetch(`http://localhost:8080/projects/get-project/${projectId}`, {
             method: 'GET',
             header: {
                 'Authorization': `Bearer ${user.token}`
