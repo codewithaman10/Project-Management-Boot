@@ -2,18 +2,21 @@ package com.project.management.projectmanagement.service;
 
 import com.project.management.projectmanagement.dao.ProjectsDao;
 import com.project.management.projectmanagement.dao.TasksDao;
-import com.project.management.projectmanagement.dto.ProjectDetailsDto;
-import com.project.management.projectmanagement.dto.ProjectDto;
-import com.project.management.projectmanagement.dto.ProjectLightDto;
-import com.project.management.projectmanagement.dto.TaskDto;
+import com.project.management.projectmanagement.dto.*;
 import com.project.management.projectmanagement.entity.Project;
 import com.project.management.projectmanagement.entity.Tasks;
+import com.project.management.projectmanagement.enums.ProjectStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -132,5 +135,30 @@ public class ProjectManagementService {
         _p.setLastUpdatedBy(project.getLastUpdatedBy());
 
         return _p;
+    }
+
+    public List<ProjectSummary> getProjectsSummary() {
+        List<Project> projects = projectsDao.findAll();
+        Map<ProjectStatus, Integer> result = new HashMap<>();
+        LocalDate date = LocalDate.now();
+        List<ProjectSummary> summary = new ArrayList<>();
+
+        BiFunction<ProjectStatus, Integer, Integer> remappingFunction =
+                (k, v) -> Objects.nonNull(v) ? v + 1 : 1;
+
+        projects.forEach(project -> {
+            if (project.isCompleted()) {
+                result.compute(ProjectStatus.COMPLETED, remappingFunction);
+            } else {
+                if (date.isBefore(project.getDueDate())) {
+                    result.compute(ProjectStatus.OVERDUE, remappingFunction);
+                } else {
+                    result.compute(ProjectStatus.PENDING, remappingFunction);
+                }
+            }
+        });
+
+        result.forEach((k, v) -> summary.add(new ProjectSummary(k, v)));
+        return summary;
     }
 }

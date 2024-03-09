@@ -1,9 +1,7 @@
 package com.project.management.projectmanagement.controller;
 
-import com.project.management.projectmanagement.dto.ProjectDetailsDto;
-import com.project.management.projectmanagement.dto.ProjectDto;
-import com.project.management.projectmanagement.dto.ProjectLightDto;
-import com.project.management.projectmanagement.dto.TaskDto;
+import com.project.management.projectmanagement.dto.*;
+import com.project.management.projectmanagement.enums.ProjectStatus;
 import com.project.management.projectmanagement.service.ProjectManagementService;
 import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/projects")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProjectsController {
 
     private final ProjectManagementService projectManagementService;
@@ -101,5 +100,15 @@ public class ProjectsController {
     public ResponseEntity<String> deleteProject(@PathVariable String id) {
         projectManagementService.deleteProjectForId(Integer.parseInt(id));
         return ResponseEntity.ok("Project and related tasks successfully deleted.");
+    }
+
+    @GetMapping(value = "fetch-project-summary")
+    public ResponseEntity<List<ProjectSummary>> getProjectsSummary() {
+        /*try {
+            Thread.sleep(10000);
+        } catch (Exception e) {
+            //
+        }*/
+        return ResponseEntity.ok(projectManagementService.getProjectsSummary());
     }
 }
